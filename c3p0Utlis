@@ -1,0 +1,77 @@
+package com.laozhang.c3p0;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
+public class C3P0Utils {
+	private C3P0Utils() {}
+	
+	//创建c3p0连接池对象
+	private static ComboPooledDataSource dataSource = new ComboPooledDataSource();
+	
+	public static Connection getConnection() {
+		Connection conn = null;
+		try {
+			conn = dataSource.getConnection();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return conn;
+	}
+	
+	//释放资源
+	public static void close(Connection conn, Statement stmt, ResultSet rs) {
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			//为了垃圾回收尽快回收对象
+			conn = null;
+		}
+		if (rs != null) {
+	        try {
+	            rs.close();
+	        } catch (SQLException e) {
+	        	e.printStackTrace();
+	        }
+	        // 垃圾回收尽快回收对象.
+	        rs = null;
+	    }
+		if (stmt != null) {
+	        try {
+	        	stmt.close();
+	        } catch (SQLException e) {
+	        	e.printStackTrace();
+	        }
+	        // 垃圾回收尽快回收对象.
+	        stmt = null;
+	    }
+	}
+	//释放资源重载方法
+	public static void close(Connection conn, Statement stmt) {
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			//为了垃圾回收尽快回收对象
+			conn = null;
+		}
+		if (stmt != null) {
+	        try {
+	        	stmt.close();
+	        } catch (SQLException e) {
+	        	e.printStackTrace();
+	        }
+	        // 垃圾回收尽快回收对象.
+	        stmt = null;
+	    }
+	}
+}
